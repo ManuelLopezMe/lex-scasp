@@ -12,8 +12,16 @@ jobs:
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
-          sudo apt-get install --yes swi-prolog-nox=9.0.4+dfsg-1ubuntu1 
+          sudo apt-get install --yes swi-prolog-nox
       - name: Install s(CASP)
-        run: swipl -g "pack_install(scasp, [interactive(false)])" -t halt
+        run: |
+          for i in {1..3}; do
+            echo "Attempt $i to install s(CASP)..."
+            swipl -g "pack_install(scasp, [interactive(false)])" -t halt && break
+            if [ $i -lt 3 ]; then 
+              echo "Installation failed, retrying in 15 seconds..."
+              sleep 15
+            fi
+          done
       - name: Run plunit suite
         run: swipl -g run_tests -t halt tests/*.pl
