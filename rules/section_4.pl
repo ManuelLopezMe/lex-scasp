@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 4(1): a British Dependent Territories citizen is within the covered group.
 section4_covered_person(Person) :-

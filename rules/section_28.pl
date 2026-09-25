@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 28(1)-(3): an application within five years after commencement meets the statutory application window.
 section28_application_window_requirement(Person) :-

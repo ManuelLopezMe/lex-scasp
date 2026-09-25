@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 27(1): the Secretary of State may register a person on an application made while the person is a minor.
 section27_may_register_minor(Person) :-

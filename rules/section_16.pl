@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 16(1)(a): overseas birth after commencement to a BDT citizen otherwise than by descent confers citizenship.
 section16_acquires_bdt_citizenship(Person) :-

@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 20(1): the mandatory route requires a timely application, historical 1948 Act marriage entitlement, husband becoming a BDT citizen, no renunciation and continuous marriage.
 section20_entitled_to_registration(Person) :-

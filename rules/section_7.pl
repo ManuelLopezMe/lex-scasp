@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 7(1)(a): this predicate accepts the historic Immigration Act entitlement as an explicit counterfactual input.
 section7_legacy_route_qualified(Person, route_a) :-

@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 26: a CUKC who becomes neither a British citizen nor a BDT citizen at commencement becomes a BOC.
 section26_becomes_boc(Person) :-

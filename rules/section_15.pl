@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 15(2): contrary evidence has priority over the abandoned-infant presumption.
 section15_priority(s15_contrary_evidence, 20).

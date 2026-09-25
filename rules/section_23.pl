@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 23(1)(a): birth, naturalisation or registration as a CUKC in a dependent territory qualifies for BDT citizenship at commencement.
 section23_territorial_cukc_basis(Person) :-

@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 18(1): general naturalisation requires application, full age and capacity, specified relevant territory, Schedule 1 satisfaction, and ministerial approval.
 section18_may_grant_naturalisation(Person) :-

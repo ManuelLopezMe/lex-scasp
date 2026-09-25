@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 :- discontiguous section25_ordinary_descent_basis/1.
 :- discontiguous section25_historical_descent_basis/1.
