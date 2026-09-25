@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 8(1): the mandatory legacy route requires a qualifying pre-commencement marriage entitlement.
 section8_entitled_to_registration(Person) :-

@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 5: a BDT citizen treated as a UK national for Community Treaty purposes is entitled on application.
 section5_entitled_to_registration(Person) :-

@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 6(1): the general naturalisation route requires an adult applicant of full capacity and an application.
 section6_general_application(Person) :-

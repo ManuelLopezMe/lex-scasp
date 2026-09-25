@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 9(1): birth must be in a foreign country during the first five years after commencement.
 section9_birth_window_requirement(Person) :-

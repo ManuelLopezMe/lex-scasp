@@ -10,14 +10,13 @@ encoding resolves every interpretive question.
 
 ## Input convention
 
-The rule files use the existing `fact(Person, Property, Value)` interface,
-backed by the RDF fact cache in `facts/rdf_facts.pl`. For these sections, a
-fact may be supplied from a hypothetical or from an external legal/factual
-determination; the code does not infer these inputs from documentary
-evidence. Numeric periods are represented in days, months, or years exactly
-where the predicate name says so. Boolean negative values such as `false`
-are explicit evidence in the hypothetical, not a general closed-world
-finding.
+The rule files use the `fact(Person, Property, Value)` interface defined in
+`facts/facts.pl`. Tests supply isolated hypothetical facts; in application, a
+fact may instead represent an external legal or factual determination. The
+code does not infer these inputs from documentary evidence. Numeric periods
+are represented in days, months, or years exactly where the predicate name
+says so. Boolean negative values such as `false` are explicit evidence in the
+hypothetical, not a general closed-world finding.
 
 The following inputs intentionally encapsulate matters outside the rules:
 

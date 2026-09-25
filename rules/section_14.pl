@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 14(2): the service exception has priority over the subsection (1)(b) legacy classification.
 section14_priority(s14_service_exception, 20).
