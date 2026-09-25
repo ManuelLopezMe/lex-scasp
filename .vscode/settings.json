@@ -1,0 +1,9 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "&": true,
+        "/^& 'C:\\\\Program Files\\\\swipl\\\\bin\\\\swipl\\.exe' -g run_tests -t halt tests\\\\test_sections_1_3\\.pl$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
