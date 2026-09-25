@@ -14,6 +14,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox
       - name: Install s(CASP)
-        run: swipl -g "pack_install(scasp)" -t halt
+        run: swipl -g "pack_install(scasp, [interactive(false)])" -t halt
       - name: Run plunit suite
         run: swipl -g run_tests -t halt tests/*.pl
