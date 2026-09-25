@@ -12,7 +12,7 @@ jobs:
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
-          sudo apt-get install --yes swi-prolog-nox
+          sudo apt-get install --yes swi-prolog-nox=9.0.4+dfsg-1ubuntu1 
       - name: Install s(CASP)
         run: swipl -g "pack_install(scasp, [interactive(false)])" -t halt
       - name: Run plunit suite
