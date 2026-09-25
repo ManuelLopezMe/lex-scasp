@@ -5,7 +5,7 @@ This is a research replication, not legal advice. Rules for Sections 1-14 are
 in `rules/`; illustrative RDF inputs are in `facts/`, and plunit tests are in
 `tests/`. Many statutory facts are represented by explicit input predicates
 rather than derived from primary records. The design and limits of the
-Sections 4-14 encoding are described in
-`docs/sections-4-14-model.md`. This code and its examples are not a substitute
-for legal interpretation and do not purport to reproduce amended or current
-law.
+Sections 1-3 and Sections 4-14 encodings are described in
+`docs/sections-1-3-model.md` and `docs/sections-4-14-model.md`. This code and
+its examples are not a substitute for legal interpretation and do not purport
+to reproduce amended or current law.
