@@ -14,8 +14,11 @@ jobs:
       - name: Install SWI-Prolog
         run: |
           sudo apt-get update
-          sudo apt-get install --yes software-properties-common
-          sudo add-apt-repository ppa:swi-prolog/stable
+          sudo apt-get install --yes wget gnupg ca-certificates
+          wget -qO- https://www.swi-prolog.org/ppa/archive-key.gpg \
+            | sudo tee /etc/apt/trusted.gpg.d/swipl.gpg > /dev/null
+          echo "deb https://www.swi-prolog.org/ppa/stable/ubuntu/ noble main" \
+            | sudo tee /etc/apt/sources.list.d/swipl.list
           sudo apt-get update
           sudo apt-get install --yes swi-prolog-nox
 
@@ -26,7 +29,6 @@ jobs:
 
       - name: Install s(CASP)
         run: |
-          sudo mkdir -p /usr/lib/swi-prolog/bin/bin
           swipl -g "pack_install(scasp, [interactive(false)])" -t halt
 
       - name: Run plunit suite
