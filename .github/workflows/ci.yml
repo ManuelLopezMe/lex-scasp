@@ -26,6 +26,7 @@ jobs:
 
       - name: Install s(CASP)
         run: |
+          sudo mkdir -p /usr/lib/swi-prolog/bin/bin
           swipl -g "pack_install(scasp, [interactive(false)])" -t halt
 
       - name: Run plunit suite
