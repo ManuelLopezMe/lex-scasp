@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 11(1): a CUKC with the pre-commencement right of abode is within the commencement rule.
 section11_general_commencement_qualification(Person) :-

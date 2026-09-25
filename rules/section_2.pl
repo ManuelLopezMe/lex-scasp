@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 2(1)(a): an overseas-born person qualifies through a British parent
 % who is a citizen otherwise than by descent.

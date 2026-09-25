@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 10(4)(a)-(c): a qualifying connection can arise from the person's own qualifying UK history.
 section10_qualifying_connection(Person) :-
