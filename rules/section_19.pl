@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 19(3): the special-circumstances eight-year extension has priority over the ordinary five-year period.
 section19_priority(s19_eight_year_extension, 20).

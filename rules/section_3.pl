@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 3(1): registration is discretionary for a minor applicant when the
 % Secretary of State approves the application.
@@ -68,8 +68,7 @@ section3_entitled_under_subsection_2(Person) :-
 section3_five_qualifying_parent(Person) :-
     fact(Person, parent_is_citizen_by_descent, true).
 
-% Section 3(5)(b): the applicant and family meet the three-year residence test
-% represented in the RDF residency history.
+% Section 3(5)(b): the applicant and family meet the three-year residence test.
 section3_five_requirements(Person) :-
     fact(Person, section3_parent_in_uk_at_start, true),
     fact(Person, section3_parent_absence_days, Days),

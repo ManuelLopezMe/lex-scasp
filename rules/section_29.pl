@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 29, applying Section 12(5): full age includes a person who has been married.
 section29_full_age_requirement(Person) :-

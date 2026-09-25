@@ -8,14 +8,15 @@ amended or current law. Tests describe isolated hypotheticals, not real people.
 
 ## Input convention and citizenship classes
 
-Rules use `fact(Person, Property, Value)` from `facts/rdf_facts.pl`. Inputs may
-represent facts supplied for a hypothetical or determinations made outside
-this program. In particular, absence of a fact is not generally treated as
-proof of a negative. The rule set keeps British Dependent Territories (BDT)
-citizenship distinct from British citizenship: rules in Sections 15-25 use
-BDT-specific inputs and outputs, and Section 24 implements its application of
-Sections 12-13 against BDT-citizenship facts rather than relying on
-`british_citizen` or British-citizenship renunciation facts.
+Rules use `fact(Person, Property, Value)` from `facts/facts.pl`. Tests supply
+isolated hypothetical inputs; in application, inputs may represent
+determinations made outside this program. In particular, absence of a fact is
+not generally treated as proof of a negative. The rule set keeps British
+Dependent Territories (BDT) citizenship distinct from British citizenship:
+rules in Sections 15-25 use BDT-specific inputs and outputs, and Section 24
+implements its application of Sections 12-13 against BDT-citizenship facts
+rather than relying on `british_citizen` or British-citizenship renunciation
+facts.
 
 ## Deliberate abstractions
 

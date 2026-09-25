@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 21(a)-(b): timely foreign-country birth registration within five years of commencement follows the adapted section 9 father tests and section 23(1)(b) counterfactual.
 section21_entitled_to_registration(Person) :-

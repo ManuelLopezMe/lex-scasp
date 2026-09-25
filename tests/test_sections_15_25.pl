@@ -1,6 +1,6 @@
 :- use_module(library(plunit)).
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 :- ensure_loaded('../rules/section_15.pl').
 :- ensure_loaded('../rules/section_16.pl').
 :- ensure_loaded('../rules/section_17.pl').
@@ -20,10 +20,10 @@ with_facts(Person, Facts, Goal) :-
     setup_call_cleanup(
         maplist(assert_person_fact(Person), Facts),
         call(Goal),
-        retractall(bna_rdf_facts:fact(Person, _, _))).
+        retractall(bna_facts:fact(Person, _, _))).
 
 assert_person_fact(Person, Property-Value) :-
-    assertz(bna_rdf_facts:fact(Person, Property, Value)).
+    assertz(bna_facts:fact(Person, Property, Value)).
 
 proves(Goal) :-
     once(scasp(Goal, [])).

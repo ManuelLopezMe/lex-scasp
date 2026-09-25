@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 22(4)(a): the applicant or an ancestor in the specified line was born in a dependent territory.
 section22_appropriate_qualifying_connection(Person) :-

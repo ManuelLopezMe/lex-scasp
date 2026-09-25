@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 30(a): a British subject without citizenship under Section 13 or 16 of the 1948 Act continues as a British subject under this section.
 section30_continues_as_british_subject(Person) :-

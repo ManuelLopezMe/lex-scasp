@@ -1,58 +1,138 @@
 :- use_module(library(plunit)).
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 :- ensure_loaded('../rules/section_1.pl').
 :- ensure_loaded('../rules/section_2.pl').
 :- ensure_loaded('../rules/section_3.pl').
 
 :- begin_tests(british_nationality_sections_1_3).
 
-test(canonical_rdf_facts_derive_uk_birth_and_parent_citizenship) :-
-    fact('https://example.org/bna#uk_birth_british_parent', born_in_uk, true),
-    fact('https://example.org/bna#uk_birth_british_parent', parent_is_citizen, true).
+% Each test uses temporary fact/3 inputs to isolate one hypothetical.
+with_facts(Person, Facts, Goal) :-
+    setup_call_cleanup(
+        maplist(assert_person_fact(Person), Facts),
+        call(Goal),
+        retractall(bna_facts:fact(Person, _, _))).
+
+assert_person_fact(Person, Property-Value) :-
+    assertz(bna_facts:fact(Person, Property, Value)).
+
+proves(Goal) :-
+    once(scasp(Goal, [])).
 
 test(section_1_birth_to_qualifying_parent) :-
-    once(scasp(section1_british_citizen(
-        'https://example.org/bna#uk_birth_british_parent'), [])).
+    with_facts(s1_birth_qualifying_parent,
+        [ born_in_uk-true,
+          after_commencement-true,
+          parent_is_citizen-true
+        ],
+        proves(section1_british_citizen(s1_birth_qualifying_parent))).
 
 test(section_1_birth_without_qualifying_parent, [fail]) :-
-    scasp(section1_british_citizen(
-        'https://example.org/bna#edge_uk_birth_no_qualifying_parent'), []).
+    with_facts(s1_birth_no_qualifying_parent,
+        [ born_in_uk-true,
+          after_commencement-true
+        ],
+        proves(section1_british_citizen(s1_birth_no_qualifying_parent))).
 
 test(section_1_special_circumstances_override_absence_limit) :-
-    once(scasp(section1_ten_year_registration_entitled(
-        'https://example.org/bna#edge_special_absence_discretion'), [])).
+    with_facts(s1_special_absence_discretion,
+        [ born_in_uk-true,
+          after_commencement-true,
+          age_at_application-10,
+          registration_application-true,
+          secretary_of_state_special_circumstances-true
+        ],
+        proves(section1_ten_year_registration_entitled(
+            s1_special_absence_discretion))).
 
 test(section_1_rebutted_abandonment_presumption, [fail]) :-
-    scasp(section1_british_citizen(
-        'https://example.org/bna#edge_abandonment_rebutted'), []).
+    with_facts(s1_abandonment_rebutted,
+        [ found_abandoned_in_uk-true,
+          after_commencement-true,
+          contrary_evidence_to_abandonment_presumption-true
+        ],
+        proves(section1_british_citizen(s1_abandonment_rebutted))).
 
 test(section_2_parent_citizen_otherwise_than_by_descent) :-
-    once(scasp(section2_british_citizen(
-        'https://example.org/bna#overseas_birth_parent_by_own_right'), [])).
+    with_facts(s2_parent_by_own_right,
+        [ born_outside_uk-true,
+          after_commencement-true,
+          parent_is_citizen_otherwise_than_descent-true
+        ],
+        proves(section2_british_citizen(s2_parent_by_own_right))).
 
 test(section_2_descent_parent_only_citizen_by_descent, [fail]) :-
-    scasp(section2_british_citizen(
-        'https://example.org/bna#descent_parent_only_by_descent'), []).
+    with_facts(s2_parent_by_descent_only,
+        [ born_outside_uk-true,
+          after_commencement-true,
+          parent_is_citizen_by_descent-true
+        ],
+        proves(section2_british_citizen(s2_parent_by_descent_only))).
 
 test(section_2_crown_service_exception_route) :-
-    once(scasp(section2_british_citizen(
-        'https://example.org/bna#descent_crown_service'), [])).
+    with_facts(s2_crown_service,
+        [ born_outside_uk-true,
+          after_commencement-true,
+          parent_has_qualifying_service-true
+        ],
+        proves(section2_british_citizen(s2_crown_service))).
 
 test(section_3_ordinary_parent_ancestry_and_residence) :-
-    once(scasp(section3_entitled_under_subsection_2(
-        'https://example.org/bna#edge_minor_parent_citizen_by_descent'), [])).
+    with_facts(s3_ordinary_ancestry_and_residence,
+        [ born_outside_uk-true,
+          born_stateless-false,
+          registration_application-true,
+          application_months_after_birth-11,
+          parent_is_citizen_by_descent-true,
+          section3_parent_ancestry_qualified-true,
+          section3_parent_in_uk_at_start-true,
+          section3_period_ends_by_birth-true,
+          section3_parent_absence_days-100
+        ],
+        proves(section3_entitled_under_subsection_2(
+            s3_ordinary_ancestry_and_residence))).
 
 test(section_3_nonstateless_applicant_fails_residence_test, [fail]) :-
-    scasp(section3_entitled_under_subsection_2(
-        'https://example.org/bna#edge_parent_three_year_residence_271'), []).
+    with_facts(s3_nonstateless_residence_fails,
+        [ born_outside_uk-true,
+          born_stateless-false,
+          registration_application-true,
+          application_months_after_birth-8,
+          parent_is_citizen_by_descent-true,
+          section3_parent_ancestry_qualified-true,
+          section3_parent_in_uk_at_start-true,
+          section3_period_ends_by_birth-true,
+          section3_parent_absence_days-271
+        ],
+        proves(section3_entitled_under_subsection_2(
+            s3_nonstateless_residence_fails))).
 
 test(section_3_stateless_exception_to_residence_requirement) :-
-    once(scasp(section3_entitled_under_subsection_2(
-        'https://example.org/bna#edge_stateless_parentage_met'), [])).
+    with_facts(s3_stateless_parentage_met,
+        [ born_outside_uk-true,
+          born_stateless-true,
+          registration_application-true,
+          application_months_after_birth-5,
+          parent_is_citizen_by_descent-true,
+          section3_parent_ancestry_qualified-true
+        ],
+        proves(section3_entitled_under_subsection_2(
+            s3_stateless_parentage_met))).
 
 test(section_3_discretion_extends_application_period) :-
-    once(scasp(section3_entitled_under_subsection_2(
-        'https://example.org/bna#edge_six_year_extension'), [])).
+    with_facts(s3_six_year_extension,
+        [ born_outside_uk-true,
+          born_stateless-false,
+          registration_application-true,
+          application_months_after_birth-72,
+          secretary_of_state_special_circumstances-true,
+          parent_is_citizen_by_descent-true,
+          section3_parent_ancestry_qualified-true,
+          section3_parent_in_uk_at_start-true,
+          section3_period_ends_by_birth-true,
+          section3_parent_absence_days-200
+        ],
+        proves(section3_entitled_under_subsection_2(s3_six_year_extension))).
 
 :- end_tests(british_nationality_sections_1_3).

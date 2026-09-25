@@ -1,5 +1,5 @@
 :- use_module(library(scasp)).
-:- use_module('../facts/rdf_facts.pl').
+:- use_module('../facts/facts.pl').
 
 % Section 13(1): the mandatory resumption route requires a prior loss by renunciation, full capacity, and application.
 section13_basic_resumption_requirements(Person) :-
