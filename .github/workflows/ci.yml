@@ -7,30 +7,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: swipl:stable
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install SWI-Prolog
+      - name: Install pack dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install --yes wget gnupg ca-certificates
-          wget -qO- https://www.swi-prolog.org/ppa/archive-key.gpg \
-            | sudo tee /etc/apt/trusted.gpg.d/swipl.gpg > /dev/null
-          echo "deb https://www.swi-prolog.org/ppa/stable/ubuntu/ noble main" \
-            | sudo tee /etc/apt/sources.list.d/swipl.list
-          sudo apt-get update
-          sudo apt-get install --yes swi-prolog-nox
-
-      - name: Check SWI-Prolog
-        run: |
-          swipl --version
-          swipl -g "current_prolog_flag(version_data, V), writeln(V)" -t halt
+          apt-get update
+          apt-get install -y git make
 
       - name: Install s(CASP)
-        run: |
-          swipl -g "pack_install(scasp, [interactive(false)])" -t halt
+        run: swipl -g "pack_install(scasp, [interactive(false)])" -t halt
 
       - name: Run plunit suite
-        run: |
-          swipl -g run_tests -t halt tests/*.pl
+        run: swipl -g run_tests -t halt tests/*.pl
