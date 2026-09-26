@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  British Nationality Act 1981 — Sections 1 and 2
+  LegalRuleML Core Specification Version 1.0 (OASIS Standard, 30 August 2021)
+
+  This file is the hand-authored target specification for the eventual
+  Prolog-to-LegalRuleML serialization pipeline. The automated exporter
+  must reproduce this structure from the s(CASP) rules in section_1.pl
+  and section_2.pl.
+
+  NOT LEGAL ADVICE. Research replication only.
+-->
+
+<lrml:LegalRuleML
+    xmlns:lrml="http://docs.oasis-open.org/legalruleml/ns/v1.0/"
+    xmlns:ruleml="http://ruleml.org/spec"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ex="http://example.org/bna#">
+
+
+    <!-- ============================================================ -->
+    <!-- Legal Source                                                  -->
+    <!-- ============================================================ -->
+
+    <lrml:LegalSources>
+
+        <lrml:LegalSource
+            key="BNA1981"
+            sameAs="https://www.legislation.gov.uk/ukpga/1981/61">
+            <lrml:hasName>British Nationality Act 1981</lrml:hasName>
+        </lrml:LegalSource>
+
+    </lrml:LegalSources>
+
+
+    <!-- ============================================================ -->
+    <!-- Statements                                                    -->
+    <!-- ============================================================ -->
+
+    <lrml:Statements>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(1)                                               -->
+        <!-- Birth in the UK after commencement to a qualifying parent  -->
+        <!-- confers British citizenship.                               -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s1-1">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-1"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornInUnitedKingdom"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornAfterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <!-- s1(1)(a)-(b): parent is British citizen OR settled in UK -->
+                            <ruleml:Or>
+
+                                <ruleml:Atom>
+                                    <ruleml:Rel iri="ex:parentIsBritishCitizen"/>
+                                    <ruleml:Var>Person</ruleml:Var>
+                                </ruleml:Atom>
+
+                                <ruleml:Atom>
+                                    <ruleml:Rel iri="ex:parentIsSettledInUnitedKingdom"/>
+                                    <ruleml:Var>Person</ruleml:Var>
+                                </ruleml:Atom>
+
+                            </ruleml:Or>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:isBritishCitizen"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(2) — ABANDONMENT PRESUMPTION                    -->
+        <!-- A newborn infant found abandoned in the UK after           -->
+        <!-- commencement is presumed to have been born in the UK to    -->
+        <!-- a qualifying parent, unless the contrary is shown.         -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s1-2-presumption">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-2-presumption"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:isFoundAbandonedInUnitedKingdom"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:afterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:presumedBornToQualifyingParent"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(2) — CONTRARY EVIDENCE REBUTTAL                 -->
+        <!-- The abandonment presumption is rebutted when contrary      -->
+        <!-- evidence is shown. This rule defeats the presumption.      -->
+        <!-- See <lrml:Overrides> below.                               -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s1-2-rebuttal">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-2-rebuttal"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:isFoundAbandonedInUnitedKingdom"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:afterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:contraryEvidenceShown"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:abandonmentPresumptionRebutted"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(3)                                               -->
+        <!-- A person born in the UK after commencement who is not      -->
+        <!-- already a citizen under s1(1) or s1(2) is entitled to     -->
+        <!-- register while a minor if a parent becomes a British       -->
+        <!-- citizen or settled in the UK and an application is made.   -->
+        <!--                                                            -->
+        <!-- Encoded as PrescriptiveStatement: the entitlement creates  -->
+        <!-- an Obligation on the Secretary of State to register the    -->
+        <!-- person when conditions are met, with the person holding    -->
+        <!-- the corresponding Right.                                   -->
+        <!-- ========================================================= -->
+
+        <lrml:PrescriptiveStatement key="BNA1981-s1-3">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-3"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornInUnitedKingdomAfterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:notBritishCitizenUnderSection1Subsections1Or2"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:isMinor"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <!-- s1(3)(a): parent becomes British citizen OR settled -->
+                            <ruleml:Or>
+
+                                <ruleml:Atom>
+                                    <ruleml:Rel iri="ex:parentBecomesBritishCitizen"/>
+                                    <ruleml:Var>Person</ruleml:Var>
+                                </ruleml:Atom>
+
+                                <ruleml:Atom>
+                                    <ruleml:Rel iri="ex:parentBecomesSettledInUnitedKingdom"/>
+                                    <ruleml:Var>Person</ruleml:Var>
+                                </ruleml:Atom>
+
+                            </ruleml:Or>
+
+                            <!-- s1(3)(b): application is made -->
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:applicationMadeForRegistration"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <!-- Obligation on the Secretary of State -->
+                        <lrml:Obligation key="s1-3-obligation">
+
+                            <lrml:Bearer>
+                                <ruleml:Ind iri="ex:SecretaryOfState"/>
+                            </lrml:Bearer>
+
+                            <lrml:Holder>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </lrml:Holder>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:registerAsBritishCitizen"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </lrml:Obligation>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:PrescriptiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(4)                                               -->
+        <!-- A person born in the UK after commencement not already a   -->
+        <!-- citizen is entitled to register after age 10 if absent     -->
+        <!-- no more than 90 days per year in the first 10 years.       -->
+        <!-- ========================================================= -->
+
+        <lrml:PrescriptiveStatement key="BNA1981-s1-4">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-4"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornInUnitedKingdomAfterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:notBritishCitizenUnderSection1Subsections1Or2"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:hasAttainedAgeOfTenYears"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:absenceWithin90DaysEachYearInFirstTenYears"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:applicationMadeForRegistration"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <lrml:Obligation key="s1-4-obligation">
+
+                            <lrml:Bearer>
+                                <ruleml:Ind iri="ex:SecretaryOfState"/>
+                            </lrml:Bearer>
+
+                            <lrml:Holder>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </lrml:Holder>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:registerAsBritishCitizen"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </lrml:Obligation>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:PrescriptiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(5)                                               -->
+        <!-- A UK court adoption order makes a minor a British citizen  -->
+        <!-- from the date of the order if an adopter is British on     -->
+        <!-- that date.                                                 -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s1-5">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-5"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:ukCourtAdoptionOrderMade"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:adopterIsBritishCitizenOnOrderDate"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:isBritishCitizen"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1(7)                                               -->
+        <!-- Secretary of State may treat a person as fulfilling the    -->
+        <!-- s1(4) absence requirement in special circumstances.        -->
+        <!-- Encoded as a Permission on the Secretary of State.         -->
+        <!-- ========================================================= -->
+
+        <lrml:PrescriptiveStatement key="BNA1981-s1-7">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s1-7"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:applicationMadeUnderSection1Subsection4"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:specialCircumstancesExist"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <lrml:Permission key="s1-7-permission">
+
+                            <lrml:Bearer>
+                                <ruleml:Ind iri="ex:SecretaryOfState"/>
+                            </lrml:Bearer>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:treatAsfulfillingAbsenceRequirement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </lrml:Permission>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:PrescriptiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 2(1)(a)                                            -->
+        <!-- A person born outside the UK after commencement is a       -->
+        <!-- British citizen if a parent is a British citizen otherwise  -->
+        <!-- than by descent.                                           -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s2-1a">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s2-1a"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornOutsideUnitedKingdom"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornAfterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:parentIsBritishCitizenOtherwiseThanByDescent"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:isBritishCitizen"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 2(1)(b)                                            -->
+        <!-- A person born outside the UK after commencement is a       -->
+        <!-- British citizen if a parent is a British citizen serving    -->
+        <!-- in qualifying Crown or designated service recruited in UK.  -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s2-1b">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s2-1b"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornOutsideUnitedKingdom"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornAfterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:parentIsBritishCitizen"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <!-- s2(1)(b), s2(2): qualifying Crown or designated service -->
+                            <!-- recruited in the United Kingdom                         -->
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:parentHasQualifyingServiceRecruitedInUK"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:isBritishCitizen"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+
+        <!-- ========================================================= -->
+        <!-- SECTION 2(1)(c)                                            -->
+        <!-- A person born outside the UK after commencement is a       -->
+        <!-- British citizen if a parent is a British citizen serving    -->
+        <!-- a Community institution recruited in a member country.     -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s2-1c">
+
+            <lrml:hasSource keyref="#BNA1981"/>
+
+            <lrml:hasTemplate>
+
+                <ruleml:Rule
+                    key="BNA1981-rule-s2-1c"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornOutsideUnitedKingdom"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:bornAfterCommencement"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:parentIsBritishCitizen"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <!-- s2(1)(c): Community institution service recruited -->
+                            <!-- in a member country at time of recruitment        -->
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:parentHasCommunityServiceRecruitedInMemberCountry"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:isBritishCitizen"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+            </lrml:hasTemplate>
+
+        </lrml:ConstitutiveStatement>
+
+    </lrml:Statements>
+
+
+    <!-- ============================================================ -->
+    <!-- Defeasibility                                                 -->
+    <!--                                                              -->
+    <!-- The contrary-evidence rebuttal rule (s1-2-rebuttal) defeats  -->
+    <!-- the abandonment presumption rule (s1-2-presumption) when     -->
+    <!-- both conditions are met. This mirrors the candidate/defeat/  -->
+    <!-- accept architecture in section_1.pl:                         -->
+    <!--   section1_rule_priority(section1_abandonment,               -->
+    <!--       s1_contrary_evidence, 20).                             -->
+    <!--   section1_rule_priority(section1_abandonment,               -->
+    <!--       s1_abandonment_presumption, 10).                       -->
+    <!-- ============================================================ -->
+
+    <lrml:Overrides key="s1-2-contrary-defeats-presumption">
+        <lrml:over keyref="#BNA1981-rule-s1-2-rebuttal"/>
+        <lrml:under keyref="#BNA1981-rule-s1-2-presumption"/>
+    </lrml:Overrides>
+
+    <!--
+        NOTE: The s1(3)/(4) registration-vs-birth-citizenship conflict
+        is not represented as an Overrides relationship here because it
+        is structurally different: the registration route does not defeat
+        the birth-citizenship route — rather, birth citizenship takes
+        priority and the registration entitlement becomes moot. The
+        correct LegalRuleML representation would be a SuborderList
+        expressing priority ordering between statements, which requires
+        a fuller temporal/procedural model than this sample encodes.
+        This is a known limitation of this serialization.
+    -->
+
+</lrml:LegalRuleML>
