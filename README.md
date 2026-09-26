@@ -54,6 +54,22 @@ swipl -g run_tests -t halt tests/*.pl
 
 GitHub Actions runs the same test suite on pushes and pull requests.
 
+## Interactive queries
+
+From the repository root, start the prompt with:
+
+```sh
+swipl -f scripts/interactive_query.pl
+```
+
+Enter queries such as `?- is_british_citizen(peter).` or a section-specific
+query such as `?- section1_british_citizen(peter).`. When a required fact is
+missing, the prompt asks for it and remembers the answer for later queries in
+that session. Successful queries display their s(CASP) justification tree.
+Type `quit` to exit. The `is_british_citizen/1` convenience query combines the
+modeled Section 1 and Section 2 citizenship routes; it is not a complete
+determination of nationality.
+
 ## Source and scope
 
 The statutory reference in `docs/` is the source text used by this project.
