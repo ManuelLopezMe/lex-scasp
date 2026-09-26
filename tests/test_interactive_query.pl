@@ -16,10 +16,22 @@ test(uk_birth_infers_overseas_birth_false) :-
           bna_facts:fact(andrew, born_outside_uk, false)
         )).
 
+test(not_born_in_uk_infers_overseas_birth) :-
+    with_person(andrew,
+        ( interactive_query:propagate_fact(andrew, born_in_uk, false),
+          bna_facts:fact(andrew, born_outside_uk, true)
+        )).
+
 test(overseas_birth_infers_uk_birth_false) :-
     with_person(andrew,
         ( interactive_query:propagate_fact(andrew, born_outside_uk, true),
           bna_facts:fact(andrew, born_in_uk, false)
+        )).
+
+test(not_born_outside_uk_infers_uk_birth) :-
+    with_person(andrew,
+        ( interactive_query:propagate_fact(andrew, born_outside_uk, false),
+          bna_facts:fact(andrew, born_in_uk, true)
         )).
 
 test(non_citizen_parent_cannot_be_citizen_otherwise_than_descent) :-

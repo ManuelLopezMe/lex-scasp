@@ -207,9 +207,15 @@ active_missing_fact(Branches, Person, Property) :-
 propagate_fact(Person, born_in_uk, true) :-
     !,
     infer_fact(Person, born_outside_uk, false).
+propagate_fact(Person, born_in_uk, false) :-
+    !,
+    infer_fact(Person, born_outside_uk, true).
 propagate_fact(Person, born_outside_uk, true) :-
     !,
     infer_fact(Person, born_in_uk, false).
+propagate_fact(Person, born_outside_uk, false) :-
+    !,
+    infer_fact(Person, born_in_uk, true).
 propagate_fact(Person, parent_is_citizen, false) :-
     !,
     infer_fact(Person, parent_is_citizen_otherwise_than_descent, false).
