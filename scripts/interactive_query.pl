@@ -19,17 +19,17 @@ load_rule_files :-
     include(is_rule_file, Entries, RuleNames),
     sort(RuleNames, SortedRuleNames),
     maplist(directory_file_path(RulesDir), SortedRuleNames, RuleFiles),
-    load_files(interactive_query:RuleFiles, [if(not_loaded)]).
+    load_files(user:RuleFiles, [if(not_loaded)]).
 
 :- load_rule_files.
 
 % Sections 1(1)-(6): expose the modeled birth and adoption citizenship routes.
 is_british_citizen(Person) :-
-    section1_british_citizen(Person).
+    user:section1_british_citizen(Person).
 
 % Section 2(1): expose the modeled citizenship-by-descent routes.
 is_british_citizen(Person) :-
-    section2_british_citizen(Person).
+    user:section2_british_citizen(Person).
 
 start :-
     main.
@@ -80,9 +80,9 @@ report_parse_error(Error) :-
     print_message(error, Error).
 
 run_query(Query, Variables) :-
-    collect_fact_properties(Query, [], Properties),
-    (   prompt_for_missing_facts(Properties)
-    ->  (   once(scasp(Query, [tree(Tree)]))
+    resolve_query(Query, SolverQuery),
+    (   prompt_for_missing_facts(SolverQuery)
+    ->  (   once(scasp(SolverQuery, [tree(Tree)]))
         ->  format('Proved: '),
             write_term(Query, [quoted(true)]),
             nl,
@@ -96,6 +96,16 @@ run_query(Query, Variables) :-
     ;   format('Input ended; query cancelled.~n')
     ).
 
+resolve_query(Query, interactive_query:Query) :-
+    functor(Query, Name, Arity),
+    current_predicate(interactive_query:Name/Arity),
+    !.
+resolve_query(Query, user:Query) :-
+    functor(Query, Name, Arity),
+    current_predicate(user:Name/Arity),
+    !.
+resolve_query(Query, interactive_query:Query).
+
 print_bindings([]) :-
     !.
 print_bindings(Variables) :-
@@ -106,51 +116,116 @@ print_binding(Name=Value) :-
     write_term(Value, [quoted(true)]),
     nl.
 
-collect_fact_properties(Goal, _, Properties) :-
+collect_fact_branches(Goal, _, [[Person-Property-Value]]) :-
     nonvar(Goal),
-    Goal = fact(Person, Property, _),
+    Goal = fact(Person, Property, Value),
+    !.
+collect_fact_branches(_Module:Goal, Seen, Branches) :-
     !,
-    Properties = [Person-Property].
-collect_fact_properties(Goal, Seen, Properties) :-
+    collect_fact_branches(Goal, Seen, Branches).
+collect_fact_branches((Left, Right), Seen, Branches) :-
+    !,
+    collect_fact_branches(Left, Seen, LeftBranches),
+    collect_fact_branches(Right, Seen, RightBranches),
+    combine_branches(LeftBranches, RightBranches, Branches).
+collect_fact_branches((Left; Right), Seen, Branches) :-
+    !,
+    collect_fact_branches(Left, Seen, LeftBranches),
+    collect_fact_branches(Right, Seen, RightBranches),
+    append(LeftBranches, RightBranches, Branches).
+collect_fact_branches(\+ _, _, [[]]) :-
+    !.
+collect_fact_branches(not(_), _, [[]]) :-
+    !.
+collect_fact_branches(true, _, [[]]) :-
+    !.
+collect_fact_branches(Goal, _, [[]]) :-
+    callable(Goal),
+    predicate_property(interactive_query:Goal, built_in),
+    !.
+collect_fact_branches(Goal, Seen, Branches) :-
     callable(Goal),
     functor(Goal, Name, Arity),
     (   memberchk(Name/Arity, Seen)
-    ->  Properties = []
+    ->  Branches = []
     ;   functor(Head, Name, Arity),
         findall(Found,
-                ( clause(interactive_query:Head, Body),
+                ( rule_clause(Head, Body),
                   Head = Goal,
-                  collect_body_properties(Body, [Name/Arity|Seen], Found)
+                  collect_fact_branches(Body, [Name/Arity|Seen], RuleBranches),
+                  member(Found, RuleBranches)
                 ),
-                Nested),
-        append(Nested, Properties)
+                Branches)
     ).
 
-collect_body_properties((Left, Right), Seen, Properties) :-
-    !,
-    collect_body_properties(Left, Seen, LeftProperties),
-    collect_body_properties(Right, Seen, RightProperties),
-    append(LeftProperties, RightProperties, Properties).
-collect_body_properties(fact(Person, Property, _), _, [Person-Property]) :-
-    !.
-collect_body_properties(Goal, _, Properties) :-
-    callable(Goal),
-    predicate_property(interactive_query:Goal, built_in),
-    !,
-    Properties = [].
-collect_body_properties(Goal, Seen, Properties) :-
-    collect_fact_properties(Goal, Seen, Properties).
+rule_clause(Head, Body) :-
+    clause(interactive_query:Head, Body).
+rule_clause(Head, Body) :-
+    clause(user:Head, Body).
 
-prompt_for_missing_facts(Properties) :-
-    sort(Properties, UniqueProperties),
-    maplist(prompt_for_missing_fact, UniqueProperties).
+combine_branches(LeftBranches, RightBranches, Branches) :-
+    findall(Combined,
+            ( member(Left, LeftBranches),
+              member(Right, RightBranches),
+              append(Left, Right, Combined)
+            ),
+            Branches).
 
-prompt_for_missing_fact(Person-Property) :-
+prompt_for_missing_facts(Query) :-
+    collect_fact_branches(Query, [], Branches),
+    prompt_active_branches(Branches).
+
+prompt_active_branches(Branches) :-
+    include(branch_is_possible, Branches, ActiveBranches),
+    active_missing_fact(ActiveBranches, Person, Property),
+    !,
+    ask_for_value(Person, Property, Answer),
+    assertz(bna_facts:fact(Person, Property, Answer)),
+    propagate_fact(Person, Property, Answer),
+    prompt_active_branches(Branches).
+prompt_active_branches(_).
+
+branch_is_possible(Branch) :-
+    maplist(fact_is_consistent, Branch).
+
+fact_is_consistent(Person-Property-RequiredValue) :-
+    (   bna_facts:fact(Person, Property, KnownValue)
+    ->  (   nonvar(RequiredValue)
+        ->  KnownValue == RequiredValue
+        ;   true
+        )
+    ;   true
+    ).
+
+active_missing_fact(Branches, Person, Property) :-
+    member(Branch, Branches),
+    member(Person-Property-_, Branch),
     ground(Person-Property),
-    (   bna_facts:fact(Person, Property, _)
-    ->  true
-    ;   ask_for_value(Person, Property, Answer),
-        assertz(bna_facts:fact(Person, Property, Answer))
+    \+ bna_facts:fact(Person, Property, _),
+    !.
+
+propagate_fact(Person, born_in_uk, true) :-
+    !,
+    infer_fact(Person, born_outside_uk, false).
+propagate_fact(Person, born_outside_uk, true) :-
+    !,
+    infer_fact(Person, born_in_uk, false).
+propagate_fact(Person, parent_is_citizen, false) :-
+    !,
+    infer_fact(Person, parent_is_citizen_otherwise_than_descent, false).
+propagate_fact(Person, parent_is_citizen_otherwise_than_descent, true) :-
+    !,
+    infer_fact(Person, parent_is_citizen, true).
+propagate_fact(_, _, _).
+
+infer_fact(Person, Property, Value) :-
+    (   bna_facts:fact(Person, Property, Existing)
+    ->  (   Existing == Value
+        ->  true
+        ;   format('Warning: not inferring ~w = ~w because ~w = ~w is already recorded.~n',
+                   [Property, Value, Property, Existing])
+        )
+    ;   assertz(bna_facts:fact(Person, Property, Value))
     ).
 
 ask_for_value(Person, Property, Answer) :-
