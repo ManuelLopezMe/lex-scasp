@@ -65,10 +65,12 @@ swipl -f scripts/interactive_query.pl
 Enter queries such as `?- is_british_citizen(peter).` or a section-specific
 query such as `?- section1_british_citizen(peter).`. When a required fact is
 missing, the prompt asks for it and remembers the answer for later queries in
-that session. Successful queries display their s(CASP) justification tree.
-Type `quit` to exit. The `is_british_citizen/1` convenience query combines the
-modeled Section 1 and Section 2 citizenship routes; it is not a complete
-determination of nationality.
+that session. It propagates modeled implications (for example, UK birth means
+not born outside the UK) and skips rule paths contradicted by known facts.
+Successful queries display their s(CASP) justification tree. Type `quit` to
+exit. The `is_british_citizen/1` convenience query combines the modeled
+Section 1 and Section 2 citizenship routes; it is not a complete determination
+of nationality.
 
 ## Source and scope
 
