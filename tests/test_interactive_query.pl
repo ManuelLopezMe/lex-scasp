@@ -94,4 +94,7 @@ test(uk_birth_to_citizen_parent_proves_convenience_query) :-
         once(scasp(user:is_british_citizen(jamie), []))
         )).
 
+test(unknown_atom_is_not_sent_to_scasp) :-
+    \+ interactive_query:resolve_query(no, _).
+
 :- end_tests(interactive_query_propagation).

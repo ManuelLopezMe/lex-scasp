@@ -82,20 +82,23 @@ report_parse_error(Error) :-
     print_message(error, Error).
 
 run_query(Query, Variables) :-
-    resolve_query(Query, SolverQuery),
-    (   prompt_for_missing_facts(SolverQuery)
-    ->  (   once(scasp(SolverQuery, [tree(Tree)]))
-        ->  format('Proved: '),
-            write_term(Query, [quoted(true)]),
-            nl,
-            print_bindings(Variables),
-            format('s(CASP) justification tree:~n'),
-            scasp_stack:print_justification_tree(Tree, [])
-        ;   format('Not proved: '),
-            write_term(Query, [quoted(true)]),
-            nl
+    (   resolve_query(Query, SolverQuery)
+    ->  (   prompt_for_missing_facts(SolverQuery)
+        ->  (   once(scasp(SolverQuery, [tree(Tree)]))
+            ->  format('Proved: '),
+                write_term(Query, [quoted(true)]),
+                nl,
+                print_bindings(Variables),
+                format('s(CASP) justification tree:~n'),
+                scasp_stack:print_justification_tree(Tree, [])
+            ;   format('Not proved: '),
+                write_term(Query, [quoted(true)]),
+                nl
+            )
+        ;   format('Input ended; query cancelled.~n')
         )
-    ;   format('Input ended; query cancelled.~n')
+    ;   functor(Query, Name, Arity),
+        format('Unknown query predicate: ~w/~d.~n', [Name, Arity])
     ).
 
 resolve_query(Query, interactive_query:Query) :-
@@ -106,7 +109,6 @@ resolve_query(Query, user:Query) :-
     functor(Query, Name, Arity),
     current_predicate(user:Name/Arity),
     !.
-resolve_query(Query, interactive_query:Query).
 
 print_bindings([]) :-
     !.
