@@ -54,11 +54,10 @@ section3_entitled_under_subsection_2(Person) :-
 section3_five_qualifying_parent(Person) :-
     fact(Person, parent_is_citizen_by_descent, true).
 
-% Section 3(5)(b): the applicant and family meet the three-year residence test.
+% Section 3(5)(b)-(c): the applicant and both parents meet the shared-territory,
+% absence, and prescribed-consent requirements.
 section3_five_requirements(Person) :-
-    fact(Person, section3_parent_in_uk_at_start, true),
-    fact(Person, section3_parent_absence_days, Days),
-    Days =< 270.
+    fact(Person, section3_subsection_5_family_residence_and_consent_requirements_met, true).
 
 % Section 3(5): a minor overseas-born applicant qualifies when the descent,
 % residence, and consent requirements are met.
