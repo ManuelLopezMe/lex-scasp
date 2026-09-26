@@ -174,4 +174,26 @@ test(section_3_discretion_extends_application_period) :-
         ],
         proves(section3_entitled_under_subsection_2(s3_six_year_extension))).
 
+test(section_3_minor_route_requires_family_residence_and_consent) :-
+    with_facts(s3_minor_family_requirements,
+        [ born_outside_uk-true,
+          minor_at_application-true,
+          registration_application-true,
+          parent_is_citizen_by_descent-true,
+          section3_subsection_5_family_residence_and_consent_requirements_met-true,
+          parents_consent_to_registration-true
+        ],
+        proves(section3_entitled_under_subsection_5(
+            s3_minor_family_requirements))).
+
+test(section_3_minor_route_rejects_missing_family_residence_or_consent, [fail]) :-
+    with_facts(s3_minor_missing_family_requirements,
+        [ born_outside_uk-true,
+          minor_at_application-true,
+          registration_application-true,
+          parent_is_citizen_by_descent-true
+        ],
+        proves(section3_entitled_under_subsection_5(
+            s3_minor_missing_family_requirements))).
+
 :- end_tests(british_nationality_sections_1_3).
