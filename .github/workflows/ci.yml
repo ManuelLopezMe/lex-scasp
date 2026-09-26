@@ -17,6 +17,14 @@ jobs:
           apt-get update
           apt-get install -y git make
 
+      - name: Install XML validation tools
+        run: |
+          apt-get update
+          apt-get install -y libxml2-utils
+
+      - name: Validate LegalRuleML sample
+        run: xmllint --schema legalruleml/schema/compact/lrml-compact.xsd legalruleml/sample_sections_1_2.lrml --noout
+
       - name: Install s(CASP)
         run: swipl -g "pack_install(scasp, [interactive(false)])" -t halt
 

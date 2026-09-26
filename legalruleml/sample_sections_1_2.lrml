@@ -9,6 +9,12 @@
   must reproduce this structure from the s(CASP) rules in section_1.pl
   and section_2.pl.
 
+  Schema validation corrections: normalized this document to the vendored
+  Compact profile: direct collection/statement elements, xml:id rule
+  identifiers, a Context-level source association, Deontic role slots, and an
+  OverrideStatement containing an Override. The Act title is retained as a
+  comment because this schema has no hasName element.
+
   NOT LEGAL ADVICE. Research replication only.
 -->
 
@@ -17,7 +23,6 @@
     xmlns:ruleml="http://ruleml.org/spec"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ex="http://example.org/bna#">
-
 
     <!-- ============================================================ -->
     <!-- Legal Source                                                  -->
@@ -28,18 +33,16 @@
         <lrml:LegalSource
             key="BNA1981"
             sameAs="https://www.legislation.gov.uk/ukpga/1981/61">
-            <lrml:hasName>British Nationality Act 1981</lrml:hasName>
+            <!-- British Nationality Act 1981 -->
         </lrml:LegalSource>
 
     </lrml:LegalSources>
-
 
     <!-- ============================================================ -->
     <!-- Statements                                                    -->
     <!-- ============================================================ -->
 
     <lrml:Statements>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 1(1)                                               -->
@@ -49,12 +52,8 @@
 
         <lrml:ConstitutiveStatement key="BNA1981-s1-1">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-1"
+                    xml:id="BNA1981-rule-s1-1"
                     closure="universal">
 
                     <ruleml:if>
@@ -101,10 +100,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 1(2) — ABANDONMENT PRESUMPTION                    -->
@@ -115,12 +111,8 @@
 
         <lrml:ConstitutiveStatement key="BNA1981-s1-2-presumption">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-2-presumption"
+                    xml:id="BNA1981-rule-s1-2-presumption"
                     closure="universal">
 
                     <ruleml:if>
@@ -152,26 +144,19 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 1(2) — CONTRARY EVIDENCE REBUTTAL                 -->
         <!-- The abandonment presumption is rebutted when contrary      -->
         <!-- evidence is shown. This rule defeats the presumption.      -->
-        <!-- See <lrml:Overrides> below.                               -->
+        <!-- See the OverrideStatement below.                          -->
         <!-- ========================================================= -->
 
         <lrml:ConstitutiveStatement key="BNA1981-s1-2-rebuttal">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-2-rebuttal"
+                    xml:id="BNA1981-rule-s1-2-rebuttal"
                     closure="universal">
 
                     <ruleml:if>
@@ -208,10 +193,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 1(3)                                               -->
@@ -228,12 +210,8 @@
 
         <lrml:PrescriptiveStatement key="BNA1981-s1-3">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-3"
+                    xml:id="BNA1981-rule-s1-3"
                     closure="universal">
 
                     <ruleml:if>
@@ -285,13 +263,15 @@
                         <!-- Obligation on the Secretary of State -->
                         <lrml:Obligation key="s1-3-obligation">
 
-                            <lrml:Bearer>
+                            <ruleml:slot>
+                                <lrml:Bearer/>
                                 <ruleml:Ind iri="ex:SecretaryOfState"/>
-                            </lrml:Bearer>
+                            </ruleml:slot>
 
-                            <lrml:Holder>
+                            <ruleml:slot>
+                                <lrml:AuxiliaryParty iri="ex:RegistrationApplicant"/>
                                 <ruleml:Var>Person</ruleml:Var>
-                            </lrml:Holder>
+                            </ruleml:slot>
 
                             <ruleml:Atom>
                                 <ruleml:Rel iri="ex:registerAsBritishCitizen"/>
@@ -304,10 +284,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:PrescriptiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 1(4)                                               -->
@@ -318,12 +295,8 @@
 
         <lrml:PrescriptiveStatement key="BNA1981-s1-4">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-4"
+                    xml:id="BNA1981-rule-s1-4"
                     closure="universal">
 
                     <ruleml:if>
@@ -363,13 +336,15 @@
 
                         <lrml:Obligation key="s1-4-obligation">
 
-                            <lrml:Bearer>
+                            <ruleml:slot>
+                                <lrml:Bearer/>
                                 <ruleml:Ind iri="ex:SecretaryOfState"/>
-                            </lrml:Bearer>
+                            </ruleml:slot>
 
-                            <lrml:Holder>
+                            <ruleml:slot>
+                                <lrml:AuxiliaryParty iri="ex:RegistrationApplicant"/>
                                 <ruleml:Var>Person</ruleml:Var>
-                            </lrml:Holder>
+                            </ruleml:slot>
 
                             <ruleml:Atom>
                                 <ruleml:Rel iri="ex:registerAsBritishCitizen"/>
@@ -382,10 +357,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:PrescriptiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 1(5)                                               -->
@@ -396,12 +368,8 @@
 
         <lrml:ConstitutiveStatement key="BNA1981-s1-5">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-5"
+                    xml:id="BNA1981-rule-s1-5"
                     closure="universal">
 
                     <ruleml:if>
@@ -433,10 +401,55 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
 
+        <!-- ========================================================= -->
+        <!-- SECTION 1(6)                                               -->
+        <!-- Citizenship acquired under s1(5) continues if the         -->
+        <!-- adoption order later ceases to have effect.                -->
+        <!-- ========================================================= -->
+
+        <lrml:ConstitutiveStatement key="BNA1981-s1-6">
+
+                <ruleml:Rule
+                    xml:id="BNA1981-rule-s1-6"
+                    closure="universal">
+
+                    <ruleml:if>
+
+                        <ruleml:And>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:ukCourtAdoptionOrderMade"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:adopterIsBritishCitizenOnOrderDate"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                            <ruleml:Atom>
+                                <ruleml:Rel iri="ex:adoptionOrderCeased"/>
+                                <ruleml:Var>Person</ruleml:Var>
+                            </ruleml:Atom>
+
+                        </ruleml:And>
+
+                    </ruleml:if>
+
+                    <ruleml:then>
+
+                        <ruleml:Atom>
+                            <ruleml:Rel iri="ex:isBritishCitizen"/>
+                            <ruleml:Var>Person</ruleml:Var>
+                        </ruleml:Atom>
+
+                    </ruleml:then>
+
+                </ruleml:Rule>
+
+        </lrml:ConstitutiveStatement>
 
         <!-- ========================================================= -->
         <!-- SECTION 1(7)                                               -->
@@ -447,12 +460,8 @@
 
         <lrml:PrescriptiveStatement key="BNA1981-s1-7">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s1-7"
+                    xml:id="BNA1981-rule-s1-7"
                     closure="universal">
 
                     <ruleml:if>
@@ -477,9 +486,10 @@
 
                         <lrml:Permission key="s1-7-permission">
 
-                            <lrml:Bearer>
+                            <ruleml:slot>
+                                <lrml:Bearer/>
                                 <ruleml:Ind iri="ex:SecretaryOfState"/>
-                            </lrml:Bearer>
+                            </ruleml:slot>
 
                             <ruleml:Atom>
                                 <ruleml:Rel iri="ex:treatAsfulfillingAbsenceRequirement"/>
@@ -492,10 +502,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:PrescriptiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 2(1)(a)                                            -->
@@ -506,12 +513,8 @@
 
         <lrml:ConstitutiveStatement key="BNA1981-s2-1a">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s2-1a"
+                    xml:id="BNA1981-rule-s2-1a"
                     closure="universal">
 
                     <ruleml:if>
@@ -548,10 +551,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 2(1)(b)                                            -->
@@ -562,12 +562,8 @@
 
         <lrml:ConstitutiveStatement key="BNA1981-s2-1b">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s2-1b"
+                    xml:id="BNA1981-rule-s2-1b"
                     closure="universal">
 
                     <ruleml:if>
@@ -611,10 +607,7 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
-
 
         <!-- ========================================================= -->
         <!-- SECTION 2(1)(c)                                            -->
@@ -625,12 +618,8 @@
 
         <lrml:ConstitutiveStatement key="BNA1981-s2-1c">
 
-            <lrml:hasSource keyref="#BNA1981"/>
-
-            <lrml:hasTemplate>
-
                 <ruleml:Rule
-                    key="BNA1981-rule-s2-1c"
+                    xml:id="BNA1981-rule-s2-1c"
                     closure="universal">
 
                     <ruleml:if>
@@ -674,12 +663,21 @@
 
                 </ruleml:Rule>
 
-            </lrml:hasTemplate>
-
         </lrml:ConstitutiveStatement>
+
+            <lrml:OverrideStatement key="s1-2-contrary-defeats-presumption">
+
+                    <lrml:Override
+                        over="#BNA1981-rule-s1-2-rebuttal"
+                        under="#BNA1981-rule-s1-2-presumption"/>
+
+            </lrml:OverrideStatement>
 
     </lrml:Statements>
 
+        <lrml:Context>
+            <lrml:appliesSource keyref="#BNA1981"/>
+        </lrml:Context>
 
     <!-- ============================================================ -->
     <!-- Defeasibility                                                 -->
@@ -694,14 +692,9 @@
     <!--       s1_abandonment_presumption, 10).                       -->
     <!-- ============================================================ -->
 
-    <lrml:Overrides key="s1-2-contrary-defeats-presumption">
-        <lrml:over keyref="#BNA1981-rule-s1-2-rebuttal"/>
-        <lrml:under keyref="#BNA1981-rule-s1-2-presumption"/>
-    </lrml:Overrides>
-
     <!--
         NOTE: The s1(3)/(4) registration-vs-birth-citizenship conflict
-        is not represented as an Overrides relationship here because it
+        is not represented as an Override relationship here because it
         is structurally different: the registration route does not defeat
         the birth-citizenship route — rather, birth citizenship takes
         priority and the registration entitlement becomes moot. The
