@@ -1,4 +1,4 @@
-:- module(interactive_query, [main/0, is_british_citizen/1]).
+:- module(interactive_query, [main/0]).
 
 :- use_module(library(apply)).
 :- use_module(library(filesex)).
@@ -6,6 +6,8 @@
 :- use_module(library(readutil)).
 :- use_module(library(scasp)).
 :- use_module('../facts/facts.pl').
+
+:- dynamic user:is_british_citizen/1.
 
 is_rule_file(File) :-
     file_name_extension(_, pl, File),
@@ -24,12 +26,12 @@ load_rule_files :-
 :- load_rule_files.
 
 % Sections 1(1)-(6): expose the modeled birth and adoption citizenship routes.
-is_british_citizen(Person) :-
-    user:section1_british_citizen(Person).
+:- assertz(user:(is_british_citizen(Person) :-
+                    section1_british_citizen(Person))).
 
 % Section 2(1): expose the modeled citizenship-by-descent routes.
-is_british_citizen(Person) :-
-    user:section2_british_citizen(Person).
+:- assertz(user:(is_british_citizen(Person) :-
+                    section2_british_citizen(Person))).
 
 start :-
     main.
