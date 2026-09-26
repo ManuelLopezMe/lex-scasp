@@ -229,6 +229,28 @@ test(section_29_wartime_withholding_blocks_registration) :-
         ],
         proves(section29_wartime_withholding_applies(s29_wartime))).
 
+test(section_29_wartime_withholding_defeats_boc_registration_candidate) :-
+    with_facts(s29_priority_conflict,
+        [ british_overseas_citizen-true,
+          full_age-true,
+          full_capacity-true,
+          section29_declaration_made_in_prescribed_manner-true,
+          section29_secretary_satisfied_other_nationality_will_be_held_or_acquired-true,
+          section29_made_during_qualifying_war-true,
+          section29_secretary_withholds_registration-true
+        ],
+        proves((section29_rule_candidate(
+              s29_priority_conflict, section29,
+              declaration_registered, s29_ordinary_registration),
+          section29_rule_candidate(
+              s29_priority_conflict, section29,
+              declaration_withheld, s29_wartime_withholding),
+          section29_rule_defeats(
+              s29_priority_conflict, section29,
+              s29_ordinary_registration, s29_wartime_withholding),
+          section29_accepted_outcome(
+              s29_priority_conflict, section29, declaration_withheld)))).
+
 test(section_29_british_citizenship_does_not_substitute_for_boc_status, [fail]) :-
     with_facts(s29_no_boc,
         [ british_citizen-true,

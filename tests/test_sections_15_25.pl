@@ -38,24 +38,44 @@ test(section_15_birth_in_territory_to_bdt_parent) :-
 
 test(section_15_abandoned_infant_presumption) :-
     with_facts(s15_abandoned,
-        [ section15_newborn_found_abandoned_in_dependent_territory-true,
+        [ after_commencement-true,
+          section15_newborn_found_abandoned_in_dependent_territory-true,
           section15_parentage_contrary_shown-false
         ],
         proves(section15_acquires_bdt_citizenship(s15_abandoned))).
 
 test(section_15_contrary_evidence_defeats_abandonment_presumption, [fail]) :-
     with_facts(s15_contrary,
-        [ section15_newborn_found_abandoned_in_dependent_territory-true,
+        [ after_commencement-true,
+          section15_newborn_found_abandoned_in_dependent_territory-true,
           section15_parentage_contrary_shown-true
         ],
         proves(section15_acquires_bdt_citizenship(s15_contrary))).
 
 test(section_15_contrary_evidence_is_explicit_higher_priority_rule) :-
     with_facts(s15_contrary_priority,
-        [ section15_newborn_found_abandoned_in_dependent_territory-true,
+        [ after_commencement-true,
+          section15_newborn_found_abandoned_in_dependent_territory-true,
           section15_parentage_contrary_shown-true
         ],
         proves(section15_abandonment_presumption_defeated(s15_contrary_priority))).
+
+test(section_15_contrary_evidence_defeats_abandonment_candidate) :-
+    with_facts(s15_abandonment_conflict,
+        [ after_commencement-true,
+          section15_newborn_found_abandoned_in_dependent_territory-true,
+          section15_parentage_contrary_shown-true
+        ],
+        proves((section15_rule_candidate(
+              s15_abandonment_conflict, section15_abandonment,
+              presumed_qualifying_parent, s15_abandonment_presumption),
+          section15_rule_candidate(
+              s15_abandonment_conflict, section15_abandonment,
+              presumption_rebutted, s15_contrary_evidence),
+          section15_rule_defeats(
+              s15_abandonment_conflict, section15_abandonment,
+              s15_abandonment_presumption, s15_contrary_evidence),
+          section15_abandonment_presumption_defeated(s15_abandonment_conflict)))).
 
 test(section_15_minor_registration_after_parent_becomes_settled) :-
     with_facts(s15_minor,
@@ -468,6 +488,28 @@ test(section_24_wartime_withholding_blocks_bdt_registration, [fail]) :-
         ],
         proves(section24_declaration_registered(s24_wartime_blocks))).
 
+test(section_24_wartime_withholding_defeats_bdt_registration_candidate) :-
+    with_facts(s24_priority_conflict,
+        [ bdt_citizen-true,
+          full_age-true,
+          full_capacity-true,
+          section24_declaration_made_in_prescribed_manner-true,
+          section24_secretary_satisfied_other_nationality_will_be_held_or_acquired-true,
+          section24_made_during_qualifying_war-true,
+          section24_secretary_withholds_registration-true
+        ],
+        proves((section24_rule_candidate(
+              s24_priority_conflict, section24,
+              declaration_registered, s24_ordinary_registration),
+          section24_rule_candidate(
+              s24_priority_conflict, section24,
+              declaration_withheld, s24_wartime_withholding),
+          section24_rule_defeats(
+              s24_priority_conflict, section24,
+              s24_ordinary_registration, s24_wartime_withholding),
+          section24_accepted_outcome(
+              s24_priority_conflict, section24, declaration_withheld)))).
+
 test(section_24_bdt_resumption_requires_bdt_renunciation_facts) :-
     with_facts(s24_resume,
         [ section24_ceased_bdt_citizen_by_renunciation-true,
@@ -535,6 +577,26 @@ test(section_25_service_exception_overrides_historic_descent) :-
           section25_father_recruited_in_dependent_territory-true
         ],
         proves(section25_not_by_descent(s25_service))).
+
+test(section_25_service_exception_defeats_historic_descent_candidate) :-
+    with_facts(s25_priority_conflict,
+        [ section25_citizenship_basis-section23_1_b_only,
+          born_outside_dependent_territories-true,
+          before_commencement-true,
+          section25_father_serving_outside_dependent_territories_at_birth-true,
+          section25_father_service_type-dependent_territory_crown,
+          section25_father_recruited_in_dependent_territory-true
+        ],
+        proves((section25_rule_candidate(
+              s25_priority_conflict, section25, by_descent,
+              s25_historical_descent),
+          section25_rule_candidate(
+              s25_priority_conflict, section25, not_by_descent,
+              s25_service_exception),
+          section25_rule_defeats(
+              s25_priority_conflict, section25, s25_historical_descent,
+              s25_service_exception),
+          section25_not_by_descent(s25_priority_conflict)))).
 
 test(section_25_designated_service_exception_requires_designation_input) :-
     with_facts(s25_designated,

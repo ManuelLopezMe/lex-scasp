@@ -20,39 +20,40 @@ section29_declaration_requirements(Person) :-
 section29_other_nationality_safeguard(Person) :-
     fact(Person, section29_secretary_satisfied_other_nationality_will_be_held_or_acquired, true).
 
-% Section 29, applying Section 12(4): wartime withholding has priority over ordinary BOC declaration registration.
-section29_priority(s29_wartime_withholding, 20).
+% Section 29, applying Section 12(1), (3): an otherwise valid BOC declaration supplies a registration candidate.
+section29_rule_candidate(Person, section29, declaration_registered, s29_ordinary_registration) :-
+    section29_declaration_requirements(Person),
+    section29_other_nationality_safeguard(Person).
 
-% Section 29, applying Section 12(1): ordinary BOC declaration registration has lower priority than wartime withholding.
-section29_priority(s29_ordinary_registration, 10).
-
-% Section 29, applying Sections 12(1), 12(4): numeric priority records that wartime withholding may defeat ordinary registration.
-section29_higher_priority(HigherRule, LowerRule) :-
-    section29_priority(HigherRule, HigherRank),
-    section29_priority(LowerRule, LowerRank),
-    HigherRank > LowerRank.
-
-% Section 29, applying Section 12(4): wartime withholding applies when the declaration is made during the specified war and the Secretary of State withholds registration.
-section29_wartime_withholding_applies(Person) :-
+% Section 29, applying Section 12(4): wartime withholding supplies an opposing BOC registration candidate.
+section29_rule_candidate(Person, section29, declaration_withheld, s29_wartime_withholding) :-
     fact(Person, section29_made_during_qualifying_war, true),
     fact(Person, section29_secretary_withholds_registration, true).
 
-% Section 29, applying Section 12(4): outside the specified wartime circumstance, subsection (4) supplies no withholding basis.
-section29_registration_not_withheld(Person) :-
-    fact(Person, section29_made_during_qualifying_war, false),
-    section29_higher_priority(s29_wartime_withholding, s29_ordinary_registration).
+% Section 29, applying Section 12(4): wartime withholding has priority over ordinary BOC declaration registration.
+section29_rule_priority(section29, s29_wartime_withholding, 20).
 
-% Section 29, applying Section 12(4): during the specified wartime circumstance, an express non-withholding determination permits registration.
-section29_registration_not_withheld(Person) :-
-    fact(Person, section29_made_during_qualifying_war, true),
-    fact(Person, section29_secretary_withholds_registration, false),
-    section29_higher_priority(s29_wartime_withholding, s29_ordinary_registration).
+% Section 29, applying Section 12(1): ordinary BOC declaration registration has lower priority than wartime withholding.
+section29_rule_priority(section29, s29_ordinary_registration, 10).
 
-% Section 29, applying Sections 12(1), 12(3)-(4): a BOC declaration is registered only with the nationality safeguard and no wartime withholding.
+% Section 29, applying Sections 12(1), 12(4): registration and wartime withholding are incompatible outcomes.
+section29_rule_conflict(section29, declaration_registered, declaration_withheld).
+
+% Section 29, applying Section 12(4): expose the applicable wartime candidate for explanations and tests.
+section29_wartime_withholding_applies(Person) :-
+    section29_rule_candidate(Person, section29, declaration_withheld, s29_wartime_withholding).
+
+% Section 29, applying Sections 12(1), 12(3)-(4): resolve the opposing BOC registration and withholding candidates.
 section29_declaration_registered(Person) :-
-    section29_declaration_requirements(Person),
-    section29_other_nationality_safeguard(Person),
-    section29_registration_not_withheld(Person).
+    section29_accepted_outcome(Person, section29, declaration_registered).
+
+% Section 29, applying Section 12(4): report the withholding outcome selected over registration.
+section29_declaration_withheld(Person) :-
+    section29_accepted_outcome(Person, section29, declaration_withheld).
+
+% Section 29, applying Sections 12(1), 12(4): registration survives exactly when accepted by priority resolution.
+section29_registration_not_withheld(Person) :-
+    section29_declaration_registered(Person).
 
 % Section 29, applying Section 12(2)-(3): a registered BOC declaration causes cessation when another nationality is held at registration.
 section29_ceases_to_be_boc(Person) :-
@@ -69,3 +70,27 @@ section29_remains_boc(Person) :-
     section29_declaration_registered(Person),
     fact(Person, section29_other_nationality_held_at_registration, false),
     fact(Person, section29_acquired_other_nationality_within_six_months, false).
+
+% Section 29, applying section 12(1), (4): wartime withholding defeats ordinary declaration registration.
+section29_rule_defeats(Person, Section, LowerRule, HigherRule) :-
+    section29_rule_candidate(Person, Section, LowerOutcome, LowerRule),
+    section29_rule_candidate(Person, Section, HigherOutcome, HigherRule),
+    section29_rule_conflicts(Section, LowerOutcome, HigherOutcome),
+    section29_rule_priority(Section, LowerRule, LowerRank),
+    section29_rule_priority(Section, HigherRule, HigherRank),
+    HigherRank > LowerRank.
+
+% Section 29, applying section 12(1), (4): conflicts apply in either candidate ordering.
+section29_rule_conflicts(Section, Outcome, OtherOutcome) :-
+    section29_rule_conflict(Section, Outcome, OtherOutcome).
+section29_rule_conflicts(Section, Outcome, OtherOutcome) :-
+    section29_rule_conflict(Section, OtherOutcome, Outcome).
+
+% Section 29, applying section 12(1), (4): record a candidate only when an applicable defeat exists.
+section29_rule_defeated(Person, Section, Rule) :-
+    section29_rule_defeats(Person, Section, Rule, _HigherRule).
+
+% Section 29, applying section 12(1), (4): accept an outcome only after rejecting defeated rules.
+section29_accepted_outcome(Person, Section, Outcome) :-
+    section29_rule_candidate(Person, Section, Outcome, Rule),
+    not section29_rule_defeated(Person, Section, Rule).

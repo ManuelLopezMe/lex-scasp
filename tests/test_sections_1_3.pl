@@ -54,6 +54,45 @@ test(section_1_rebutted_abandonment_presumption, [fail]) :-
         ],
         proves(section1_british_citizen(s1_abandonment_rebutted))).
 
+test(section_1_abandonment_candidates_resolve_by_priority) :-
+    with_facts(s1_abandonment_conflict,
+        [ found_abandoned_in_uk-true,
+          after_commencement-true,
+          contrary_evidence_to_abandonment_presumption-true
+        ],
+        proves((section1_rule_candidate(
+              s1_abandonment_conflict, section1_abandonment,
+              presumed_qualifying_parent, s1_abandonment_presumption),
+          section1_rule_candidate(
+              s1_abandonment_conflict, section1_abandonment,
+              presumption_rebutted, s1_contrary_evidence),
+          section1_rule_defeats(
+              s1_abandonment_conflict, section1_abandonment,
+              s1_abandonment_presumption, s1_contrary_evidence),
+          section1_abandonment_presumption_defeated(s1_abandonment_conflict)))).
+
+test(section_1_birth_status_defeats_registration_candidate) :-
+    with_facts(s1_birth_registration_conflict,
+        [ born_in_uk-true,
+          after_commencement-true,
+          parent_is_citizen-true,
+          minor_at_application-true,
+          registration_application-true,
+          parent_became_qualifying-true
+        ],
+        proves((section1_rule_candidate(
+              s1_birth_registration_conflict, section1_registration,
+              already_citizen, s1_birth_status),
+          section1_rule_candidate(
+              s1_birth_registration_conflict, section1_registration,
+              registration_entitlement, s1_minor_registration),
+          section1_rule_defeats(
+              s1_birth_registration_conflict, section1_registration,
+              s1_minor_registration, s1_birth_status),
+          section1_accepted_outcome(
+              s1_birth_registration_conflict, section1_registration,
+              already_citizen)))).
+
 test(section_2_parent_citizen_otherwise_than_by_descent) :-
     with_facts(s2_parent_by_own_right,
         [ born_outside_uk-true,

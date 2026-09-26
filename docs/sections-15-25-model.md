@@ -79,14 +79,22 @@ facts.
   Schedule 2 paragraph 1 status and the specified counterfactuals are explicit
   inputs. For subsection (2), service type, service abroad, local recruitment,
   and (for designated service) designation under section 16(3) are separate
-  facts. Explicit priority ranks give the service exception precedence only
-  over the historic routes in subsection (1)(b), (d), (e) and (f). This section
+  facts. The historic descent route and service exception are independently
+  derived as candidates; explicit priority gives the service exception
+  precedence only over the historic routes in subsection (1)(b), (d), (e) and
+  (f). This section
   classifies whether a BDT citizen is by descent; it does not itself confer
   citizenship.
 
-The priority predicates model statutory precedence rather than deriving legal
-facts. The source paper discusses why the Act's structure requires extensions
-to simple Horn-clause logic; this encoding keeps external historic facts and
+Sections 15, 24, and 25 also use explicit candidate/defeat rules. Each
+section-local resolver records a defeat only when both incompatible candidates apply and a
+declared priority ranks one above the other; it uses negation-as-failure only
+when accepting a final outcome after resolution. Sections 17 and 19 contain
+alternative application periods leading to the same entitlement, not
+conflicting outcomes, so they do not declare priorities. See
+`defeasible-rules.md` for the common semantics and test pattern. The source
+paper discusses why the Act's structure requires extensions to simple
+Horn-clause logic; this encoding keeps external historic facts and
 discretionary decisions visible instead of filling those gaps with invented
 law. Tests cover positive and negative routes, statutory exceptions,
 thresholds, and interaction between Sections 15-25 and the inherited

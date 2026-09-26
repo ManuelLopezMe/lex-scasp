@@ -26,18 +26,6 @@ section17_grandparent_requirement(Person) :-
 section17_parent_residence_requirement(Person) :-
     fact(Person, section17_parent_three_year_residence_before_birth_met, true).
 
-% Section 17(2), (4): the six-year special-circumstances extension has priority over the ordinary twelve-month application window.
-section17_priority(s17_extended_window, 20).
-
-% Section 17(2): the ordinary birth-registration window has lower priority than subsection (4)'s extension.
-section17_priority(s17_twelve_month_window, 10).
-
-% Section 17(2), (4): numeric priority records the special-circumstances power to extend the application period.
-section17_higher_priority(HigherRule, LowerRule) :-
-    section17_priority(HigherRule, HigherRank),
-    section17_priority(LowerRule, LowerRank),
-    HigherRank > LowerRank.
-
 % Section 17(2)-(3): a non-stateless overseas-born person is entitled within twelve months if ancestry and residence requirements are met.
 section17_entitled_to_birth_registration(Person) :-
     fact(Person, born_outside_dependent_territories, true),
@@ -45,8 +33,7 @@ section17_entitled_to_birth_registration(Person) :-
     fact(Person, section17_born_stateless, false),
     section17_parent_ancestry_requirement(Person),
     section17_grandparent_requirement(Person),
-    section17_parent_residence_requirement(Person),
-    section17_higher_priority(s17_extended_window, s17_twelve_month_window).
+    section17_parent_residence_requirement(Person).
 
 % Section 17(2)-(3): a stateless overseas-born person is entitled within twelve months if ancestry requirements are met; subsection (2)(c) does not apply.
 section17_entitled_to_birth_registration(Person) :-
@@ -54,8 +41,7 @@ section17_entitled_to_birth_registration(Person) :-
     fact(Person, section17_application_within_twelve_months_of_birth, true),
     fact(Person, section17_born_stateless, true),
     section17_parent_ancestry_requirement(Person),
-    section17_grandparent_requirement(Person),
-    section17_higher_priority(s17_extended_window, s17_twelve_month_window).
+    section17_grandparent_requirement(Person).
 
 % Section 17(2)-(4): a non-stateless person may use the extended window if special circumstances are approved and residence is met.
 section17_entitled_to_birth_registration(Person) :-
@@ -65,8 +51,7 @@ section17_entitled_to_birth_registration(Person) :-
     fact(Person, section17_born_stateless, false),
     section17_parent_ancestry_requirement(Person),
     section17_grandparent_requirement(Person),
-    section17_parent_residence_requirement(Person),
-    section17_higher_priority(s17_extended_window, s17_twelve_month_window).
+    section17_parent_residence_requirement(Person).
 
 % Section 17(2)-(4): a stateless person may use the extended window without the subsection (2)(c) residence requirement.
 section17_entitled_to_birth_registration(Person) :-
@@ -75,8 +60,7 @@ section17_entitled_to_birth_registration(Person) :-
     fact(Person, section17_secretary_approves_six_year_extension, true),
     fact(Person, section17_born_stateless, true),
     section17_parent_ancestry_requirement(Person),
-    section17_grandparent_requirement(Person),
-    section17_higher_priority(s17_extended_window, s17_twelve_month_window).
+    section17_grandparent_requirement(Person).
 
 % Section 17(5)(a): a parent was a BDT citizen by descent at the applicant's birth.
 section17_parent_descent_at_birth(Person) :-

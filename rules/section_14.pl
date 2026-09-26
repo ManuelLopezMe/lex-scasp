@@ -1,17 +1,7 @@
 :- use_module(library(scasp)).
 :- use_module('../facts/facts.pl').
 
-% Section 14(2): the service exception has priority over the subsection (1)(b) legacy classification.
-section14_priority(s14_service_exception, 20).
-
-% Section 14(1)(b): the ordinary historic descent route has lower priority than subsection (2)'s service exception.
-section14_priority(s14_legacy_descent, 10).
-
-% Sections 14(1)(b), 14(2): numeric priority controls whether qualifying service excludes descent classification.
-section14_higher_priority(HigherRule, LowerRule) :-
-    section14_priority(HigherRule, HigherRank),
-    section14_priority(LowerRule, LowerRank),
-    HigherRank > LowerRank.
+:- discontiguous section14_by_descent/1.
 
 % Section 14(1)(a): post-commencement overseas birth under section 2(1)(a) alone is by descent.
 section14_by_descent(Person) :-
@@ -59,29 +49,40 @@ section14_by_descent(Person) :-
 section14_by_descent(Person) :-
     fact(Person, section14_citizenship_basis, schedule2_paragraph2).
 
-% Section 14(1)(b), (2): the historic route is by descent only when the service exception does not override it.
-section14_by_descent(Person) :-
+% Section 14(1)(b), (e): a qualifying legacy route supplies a descent candidate before applying the service exception.
+section14_rule_candidate(Person, section14, by_descent, s14_legacy_descent) :-
+    section14_legacy_birth_route(Person).
+
+% Section 14(1)(e): the legacy marriage route also supplies a descent candidate before resolving subsection (2).
+section14_rule_candidate(Person, section14, by_descent, s14_legacy_descent) :-
+    section14_legacy_section8_route(Person).
+
+% Section 14(2): qualifying service supplies the competing outcome for a covered historic route.
+section14_rule_candidate(Person, section14, not_by_descent, s14_service_exception) :-
     section14_legacy_birth_route(Person),
-    not section14_service_exception(Person),
-    section14_higher_priority(s14_service_exception, s14_legacy_descent).
+    section14_service_exception(Person).
 
-% Section 14(1)(e), (2): the historic marriage route is by descent only when the service exception does not override it.
+% Section 14(2): service also defeats descent on the historic section 8 marriage route.
+section14_rule_candidate(Person, section14, not_by_descent, s14_service_exception) :-
+    section14_legacy_section8_route(Person),
+    section14_service_exception(Person).
+
+% Section 14(2): service exception has priority over the ordinary historic descent classification.
+section14_rule_priority(section14, s14_service_exception, 20).
+
+% Section 14(1)(b), (e): legacy descent has lower priority than the subsection (2) service exception.
+section14_rule_priority(section14, s14_legacy_descent, 10).
+
+% Section 14(1)-(2): by-descent and not-by-descent are competing classifications for these historic routes.
+section14_rule_conflict(section14, by_descent, not_by_descent).
+
+% Section 14(1)(b), (e), (2): accept historic descent only after resolving any applicable service exception.
 section14_by_descent(Person) :-
-    section14_legacy_section8_route(Person),
-    not section14_service_exception(Person),
-    section14_higher_priority(s14_service_exception, s14_legacy_descent).
+    section14_accepted_outcome(Person, section14, by_descent).
 
-% Section 14(2): qualifying service removes descent classification only for the subsection (1)(b) or (e) historical routes.
+% Section 14(2): report the higher-priority service outcome for the legacy routes.
 section14_not_by_descent(Person) :-
-    section14_legacy_birth_route(Person),
-    section14_service_exception(Person),
-    section14_higher_priority(s14_service_exception, s14_legacy_descent).
-
-% Section 14(2): qualifying service also removes descent classification from the subsection (1)(e) historical route.
-section14_not_by_descent(Person) :-
-    section14_legacy_section8_route(Person),
-    section14_service_exception(Person),
-    section14_higher_priority(s14_service_exception, s14_legacy_descent).
+    section14_accepted_outcome(Person, section14, not_by_descent).
 
 % Section 14(1)(b): the specified pre-commencement status and 1948-1965 Act conditions are input as a historical-law determination.
 section14_legacy_birth_route(Person) :-
@@ -112,3 +113,27 @@ section14_service_exception(Person) :-
     fact(Person, section14_father_served_outside_uk_at_birth, true),
     fact(Person, section14_father_service_type, community_institution),
     fact(Person, section14_service_recruited_in_member_country_at_recruitment, true).
+
+% Section 14(1)-(2): qualifying service defeats the lower-ranked legacy descent candidate.
+section14_rule_defeats(Person, Section, LowerRule, HigherRule) :-
+    section14_rule_candidate(Person, Section, LowerOutcome, LowerRule),
+    section14_rule_candidate(Person, Section, HigherOutcome, HigherRule),
+    section14_rule_conflicts(Section, LowerOutcome, HigherOutcome),
+    section14_rule_priority(Section, LowerRule, LowerRank),
+    section14_rule_priority(Section, HigherRule, HigherRank),
+    HigherRank > LowerRank.
+
+% Section 14(1)-(2): conflicts apply in either candidate ordering.
+section14_rule_conflicts(Section, Outcome, OtherOutcome) :-
+    section14_rule_conflict(Section, Outcome, OtherOutcome).
+section14_rule_conflicts(Section, Outcome, OtherOutcome) :-
+    section14_rule_conflict(Section, OtherOutcome, Outcome).
+
+% Section 14(1)-(2): record a candidate only when an applicable priority defeat exists.
+section14_rule_defeated(Person, Section, Rule) :-
+    section14_rule_defeats(Person, Section, Rule, _HigherRule).
+
+% Section 14(1)-(2): accept a descent classification only after rejecting defeated rules.
+section14_accepted_outcome(Person, Section, Outcome) :-
+    section14_rule_candidate(Person, Section, Outcome, Rule),
+    not section14_rule_defeated(Person, Section, Rule).

@@ -20,14 +20,14 @@ independently verified by these rules.
   `parent_is_citizen`, and `parent_is_settled` supply the birth and parent
   conditions. The abandoned-infant presumption uses
   `found_abandoned_in_uk` and is defeated by an explicit
-  `contrary_evidence_to_abandonment_presumption` fact; if that fact is absent,
-  the rule treats the presumption as unrebutted. The ten-year absence test is
+  `contrary_evidence_to_abandonment_presumption` fact. Both presumption and
+  rebuttal derive candidates; the section-local defeasibility resolver selects
+  the higher-priority contrary-evidence outcome. The ten-year absence test is
   supplied as the aggregate Boolean
   `first_ten_years_absence_within_90_days_each_year`. The special-circumstances
   fact stands in for the Secretary of State's decision under subsection (7).
-  The subsection (3) and (4) routes use negation-as-failure to exclude people
-  already derived as citizens under subsections (1) or (2); this exclusion
-  depends on the supplied facts and is not a separate factual determination.
+  Section 1 birth citizenship and registration entitlements are derived as
+  competing candidates and resolved by priority.
   Adoption inputs assert a UK court adoption order and the adopter's
   citizenship on the order date.
 * **Section 2:** `parent_is_citizen_otherwise_than_descent` supplies the
@@ -49,10 +49,9 @@ independently verified by these rules.
   checks minority, a descent-citizen parent, the represented residence facts,
   and consent.
 
-The section-specific priority predicates use numeric ranks and a comparison
-rule to gate the implemented exception or alternative route. These ranks
-express only the local relationships encoded here; they are not a general
-statutory conflict-resolution mechanism.
+Section 3(4)'s ordinary and special-circumstances filing windows are
+alternative derivations of the same entitlement, so they do not need priority
+resolution.
 
 ## Scope limitations
 

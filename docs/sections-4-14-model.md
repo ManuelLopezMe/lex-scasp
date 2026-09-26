@@ -54,10 +54,12 @@ The following inputs intentionally encapsulate matters outside the rules:
   overseas posting, recruitment location, and (for Community service)
   membership status at recruitment have already been established.
 
-The priority predicates give named higher-ranked exceptions/extensions.
-Negation is used only for the explicit priority exclusions in Sections 11
-and 14; Section 12 instead represents wartime withholding and non-withholding
-as positive facts. Negation is not used to invent missing facts or replace
+Sections 4, 11, 12, and 14 use explicit candidate, conflict, and priority
+rules; both sides of a conflict are independently derivable before the
+section-local resolver rejects a defeated candidate. Section 7's extended period is an
+alternative route to the same entitlement, not a conflicting outcome.
+Negation-as-failure is reserved for the resolver's final rejection of a
+defeated candidate. It is not used to invent missing facts or replace
 Schedule/external determinations. Numeric thresholds are tested at their
 statutory edges where the encoding represents them.
 
