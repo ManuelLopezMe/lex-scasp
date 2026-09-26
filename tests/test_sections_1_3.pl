@@ -180,7 +180,8 @@ test(section_3_minor_route_requires_family_residence_and_consent) :-
           minor_at_application-true,
           registration_application-true,
           parent_is_citizen_by_descent-true,
-          section3_subsection_5_family_residence_and_consent_requirements_met-true
+          section3_subsection_5_family_residence_and_consent_requirements_met-true,
+          parents_consent_to_registration-true
         ],
         proves(section3_entitled_under_subsection_5(
             s3_minor_family_requirements))).
