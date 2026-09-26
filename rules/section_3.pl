@@ -8,19 +8,6 @@ section3_may_register(Person) :-
     fact(Person, registration_application, true),
     fact(Person, secretary_of_state_approves_registration, true).
 
-% Section 3(2): the ordinary twelve-month registration window has lower priority.
-section3_priority(s3_ordinary_twelve_month_window, 10).
-
-% Section 3(4): special circumstances give the six-year window higher priority.
-section3_priority(s3_special_six_year_extension, 20).
-
-% Sections 3(2) and 3(4): the special-circumstances extension has priority over
-% the ordinary twelve-month application window.
-section3_higher_priority(HigherRule, LowerRule) :-
-    section3_priority(HigherRule, HigherRank),
-    section3_priority(LowerRule, LowerRank),
-    HigherRank > LowerRank.
-
 % Section 3(2): an application made within twelve months is timely.
 section3_application_is_timely(Person) :-
     fact(Person, application_months_after_birth, Months),
@@ -30,8 +17,7 @@ section3_application_is_timely(Person) :-
 section3_application_is_timely(Person) :-
     fact(Person, application_months_after_birth, Months),
     Months =< 72,
-    fact(Person, secretary_of_state_special_circumstances, true),
-    section3_higher_priority(s3_special_six_year_extension, s3_ordinary_twelve_month_window).
+    fact(Person, secretary_of_state_special_circumstances, true).
 
 % Section 3(3)(a)-(b): the parent was a citizen by descent and has a qualifying grandparent.
 section3_parent_ancestry_qualified(Person) :-

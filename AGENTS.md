@@ -15,9 +15,10 @@ should say so.
 - One file per statute section (or closely related group) in /rules, 
   named by section number.
 - Every rule has a comment citing the exact subsection it encodes.
-- Overrides/exceptions between sections are expressed as explicit 
-  s(CASP) rule priority — never re-encode an exception as nested 
-  negation-as-failure.
+- Overrides/exceptions are encoded as independently derivable candidates and
+  explicit priority/defeat rules; reserve negation-as-failure for rejecting a
+  defeated candidate at final resolution, never for gating the lower-priority
+  rule out of consideration. See `docs/defeasible-rules.md`.
 - Commit messages describe the legal outcome a change enables or 
   fixes, not just "add section N".
 - Test cases live in /tests, one hypothetical per test; where 

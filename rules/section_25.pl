@@ -78,18 +78,6 @@ section25_ordinary_descent_basis(Person) :-
     fact(Person, born_in_uk, true),
     fact(Person, after_commencement, true).
 
-% Section 25(2): service exceptions have priority over only the historic routes in subsection (1)(b), (d), (e) and (f).
-section25_priority(s25_service_exception, 20).
-
-% Section 25(1)(b), (d)-(f): historical descent classification has lower priority than subsection (2)'s service exception.
-section25_priority(s25_historical_descent, 10).
-
-% Section 25(1)-(2): numeric priority gives the specified service exception precedence over the historic descent routes.
-section25_higher_priority(HigherRule, LowerRule) :-
-    section25_priority(HigherRule, HigherRank),
-    section25_priority(LowerRule, LowerRank),
-    HigherRank > LowerRank.
-
 % Section 25(2): a father serving outside the territories in dependent-territory Crown service recruited there triggers the exception.
 section25_service_exception(Person) :-
     fact(Person, born_outside_dependent_territories, true),
@@ -107,18 +95,56 @@ section25_service_exception(Person) :-
     fact(Person, section25_service_description_designated_under_section16_3, true),
     fact(Person, section25_father_recruited_in_dependent_territory, true).
 
-% Section 25(1)(b), (d)-(f), (2): historical descent obtains only where the higher-priority service exception does not apply.
-section25_by_descent(Person) :-
-    section25_historical_descent_basis(Person),
-    not section25_service_exception(Person),
-    section25_higher_priority(s25_service_exception, s25_historical_descent).
+% Section 25(1)(b), (d)-(f): each historic route supplies a descent candidate before subsection (2) is resolved.
+section25_rule_candidate(Person, section25, by_descent, s25_historical_descent) :-
+    section25_historical_descent_basis(Person).
 
-% Section 25(2): qualifying service defeats descent classification for only the historical routes named in subsection (2).
-section25_not_by_descent(Person) :-
+% Section 25(2): qualifying service supplies a competing non-descent candidate for the subsection (1)(b), (d)-(f) routes.
+section25_rule_candidate(Person, section25, not_by_descent, s25_service_exception) :-
     section25_historical_descent_basis(Person),
-    section25_service_exception(Person),
-    section25_higher_priority(s25_service_exception, s25_historical_descent).
+    section25_service_exception(Person).
+
+% Section 25(2): the service exception has priority over historical descent classification.
+section25_rule_priority(section25, s25_service_exception, 20).
+
+% Section 25(1)(b), (d)-(f): historical descent has lower priority than the subsection (2) service exception.
+section25_rule_priority(section25, s25_historical_descent, 10).
+
+% Section 25(1)-(2): descent and non-descent are competing classifications for the named historical routes.
+section25_rule_conflict(section25, by_descent, not_by_descent).
+
+% Section 25(1)(b), (d)-(f), (2): resolve the historical descent and service-exception candidates.
+section25_by_descent(Person) :-
+    section25_accepted_outcome(Person, section25, by_descent).
+
+% Section 25(2): report when the service exception defeats the historical descent candidate.
+section25_not_by_descent(Person) :-
+    section25_accepted_outcome(Person, section25, not_by_descent).
 
 % Section 25(1): the remaining statutory acquisition and registration routes are by descent without the subsection (2) historical exception.
 section25_by_descent(Person) :-
     section25_ordinary_descent_basis(Person).
+
+% Section 25(1)-(2): the applicable service exception defeats lower-ranked historic descent.
+section25_rule_defeats(Person, Section, LowerRule, HigherRule) :-
+    section25_rule_candidate(Person, Section, LowerOutcome, LowerRule),
+    section25_rule_candidate(Person, Section, HigherOutcome, HigherRule),
+    section25_rule_conflicts(Section, LowerOutcome, HigherOutcome),
+    section25_rule_priority(Section, LowerRule, LowerRank),
+    section25_rule_priority(Section, HigherRule, HigherRank),
+    HigherRank > LowerRank.
+
+% Section 25(1)-(2): conflicts apply in either candidate ordering.
+section25_rule_conflicts(Section, Outcome, OtherOutcome) :-
+    section25_rule_conflict(Section, Outcome, OtherOutcome).
+section25_rule_conflicts(Section, Outcome, OtherOutcome) :-
+    section25_rule_conflict(Section, OtherOutcome, Outcome).
+
+% Section 25(1)-(2): record a candidate only when an applicable priority defeat exists.
+section25_rule_defeated(Person, Section, Rule) :-
+    section25_rule_defeats(Person, Section, Rule, _HigherRule).
+
+% Section 25(1)-(2): accept a descent classification only after rejecting defeated rules.
+section25_accepted_outcome(Person, Section, Outcome) :-
+    section25_rule_candidate(Person, Section, Outcome, Rule),
+    not section25_rule_defeated(Person, Section, Rule).

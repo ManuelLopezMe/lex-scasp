@@ -54,6 +54,28 @@ test(section_4_excess_absence_needs_special_circumstances_relief) :-
         ],
         proves(section4_entitled_to_registration(s4_relief))).
 
+test(section_4_special_relief_defeats_ordinary_absence_failure) :-
+    with_facts(s4_absence_conflict,
+        [ section4_status-bdt_citizen,
+          registration_application-true,
+          section4_in_uk_at_five_year_period_start-true,
+          section4_absence_days_five_years-451,
+          section4_absence_days_last_twelve_months-0,
+          section4_restricted_during_last_twelve_months-false,
+          section4_in_uk_in_breach_during_five_years-false,
+          section4_special_relief-five_year_absence
+        ],
+        proves((section4_rule_candidate(
+              s4_absence_conflict, section4,
+              not_met(five_year_absence), s4_ordinary_absence_limit),
+          section4_rule_candidate(
+              s4_absence_conflict, section4,
+              met(five_year_absence), s4_special_absence_relief),
+          section4_rule_defeats(
+              s4_absence_conflict, section4,
+              s4_ordinary_absence_limit, s4_special_absence_relief),
+          section4_five_year_absence_requirement(s4_absence_conflict)))).
+
 test(section_4_451_days_without_relief_fails, [fail]) :-
     with_facts(s4_451_no_relief,
         [ section4_status-bdt_citizen,
@@ -301,6 +323,27 @@ test(section_11_maternal_stateless_exception_satisfied_by_alternative_roa) :-
         ],
         proves(section11_becomes_british_citizen(s11_maternal_exception_met))).
 
+test(section_11_maternal_exception_defeats_ordinary_commencement_rule) :-
+    with_facts(s11_priority_conflict,
+        [ section11_cukc_immediately_before_commencement-true,
+          section11_right_of_abode_immediately_before_commencement-true,
+          section11_registered_under_1964_stateless_act_on_maternal_ground-true,
+          section11_mother_becomes_british_or_would_but_for_death-false,
+          section11_right_of_abode_under_immigration_act_2_1_c-false
+        ],
+        proves((section11_rule_candidate(
+              s11_priority_conflict, section11,
+              becomes_british_citizen, s11_ordinary_commencement_rule),
+          section11_rule_candidate(
+              s11_priority_conflict, section11,
+              does_not_become_british_citizen,
+              s11_maternal_stateless_exception),
+          section11_rule_defeats(
+              s11_priority_conflict, section11,
+              s11_ordinary_commencement_rule,
+              s11_maternal_stateless_exception),
+          section11_does_not_become_british_citizen(s11_priority_conflict)))).
+
 test(section_12_declaration_and_six_month_nationality_safeguard_retain_status) :-
     with_facts(s12_retain,
         [ british_citizen-true,
@@ -366,6 +409,28 @@ test(section_12_wartime_withholding_blocks_registration, [fail]) :-
         ],
         proves(section12_declaration_registered(s12_war_blocks))).
 
+test(section_12_wartime_withholding_defeats_registration_candidate) :-
+    with_facts(s12_priority_conflict,
+        [ british_citizen-true,
+          full_age-true,
+          full_capacity-true,
+          section12_declaration_made_in_prescribed_manner-true,
+          section12_secretary_satisfied_other_nationality_will_be_held_or_acquired-true,
+          section12_made_during_qualifying_war-true,
+          section12_secretary_withholds_registration-true
+        ],
+        proves((section12_rule_candidate(
+              s12_priority_conflict, section12,
+              declaration_registered, s12_ordinary_registration),
+          section12_rule_candidate(
+              s12_priority_conflict, section12,
+              declaration_withheld, s12_wartime_withholding),
+          section12_rule_defeats(
+              s12_priority_conflict, section12,
+              s12_ordinary_registration, s12_wartime_withholding),
+          section12_accepted_outcome(
+              s12_priority_conflict, section12, declaration_withheld)))).
+
 test(section_13_mandatory_resumption_available_once) :-
     with_facts(s13_entitled,
         [ section13_ceased_british_citizen_by_renunciation-true,
@@ -424,6 +489,26 @@ test(section_14_service_exception_blocks_legacy_by_descent, [fail]) :-
           section14_service_recruited_in_uk-true
         ],
         proves(section14_by_descent(s14_exception_not_descent))).
+
+test(section_14_service_exception_defeats_legacy_descent_candidate) :-
+    with_facts(s14_priority_conflict,
+        [ born_outside_uk-true,
+          before_commencement-true,
+          section14_subsection_1_b_historic_conditions_met-true,
+          section14_father_served_outside_uk_at_birth-true,
+          section14_father_service_type-uk_designated_service,
+          section14_service_recruited_in_uk-true
+        ],
+        proves((section14_rule_candidate(
+              s14_priority_conflict, section14, by_descent,
+              s14_legacy_descent),
+          section14_rule_candidate(
+              s14_priority_conflict, section14, not_by_descent,
+              s14_service_exception),
+          section14_rule_defeats(
+              s14_priority_conflict, section14, s14_legacy_descent,
+              s14_service_exception),
+          section14_not_by_descent(s14_priority_conflict)))).
 
 test(section_14_without_service_exception_retains_legacy_descent_classification) :-
     with_facts(s14_legacy,

@@ -22,18 +22,6 @@ section7_extended_window(Person) :-
     Years =< 8,
     fact(Person, section7_special_circumstances_extension, true).
 
-% Section 7(6): the special extension has priority over the ordinary five-year deadline.
-section7_priority(s7_special_extension, 20).
-
-% Section 7(1): the ordinary period has lower priority than the special extension.
-section7_priority(s7_ordinary_period, 10).
-
-% Sections 7(1), 7(6), and 7(7): numeric priority represents the statutory extension to the filing period.
-section7_higher_priority(HigherRule, LowerRule) :-
-    section7_priority(HigherRule, HigherRank),
-    section7_priority(LowerRule, LowerRank),
-    HigherRank > LowerRank.
-
 % Section 7(1)(a): the first historic route gives entitlement on a timely application.
 section7_entitled_under_subsection_1(Person) :-
     fact(Person, registration_application, true),
@@ -50,15 +38,13 @@ section7_entitled_under_subsection_1(Person) :-
 section7_entitled_under_subsection_1(Person) :-
     fact(Person, registration_application, true),
     section7_extended_window(Person),
-    section7_extended_route_qualified(Person, route_a),
-    section7_higher_priority(s7_special_extension, s7_ordinary_period).
+    section7_extended_route_qualified(Person, route_a).
 
 % Section 7(6): the extended route (b) also requires entitlement at the five-year endpoint.
 section7_entitled_under_subsection_1(Person) :-
     fact(Person, registration_application, true),
     section7_extended_window(Person),
-    section7_extended_route_qualified(Person, route_b),
-    section7_higher_priority(s7_special_extension, s7_ordinary_period).
+    section7_extended_route_qualified(Person, route_b).
 
 % Section 7(6): route (a)'s historic entitlement is preserved when the application window is extended.
 section7_extended_route_qualified(Person, route_a) :-
@@ -119,8 +105,7 @@ section7_subsection_2_window(Person) :-
     fact(Person, section7_elapsed_years_after_commencement, Years),
     Years >= 0,
     Years =< 8,
-    fact(Person, section7_special_subsection_2_extension, true),
-    section7_higher_priority(s7_special_extension, s7_ordinary_period).
+    fact(Person, section7_special_subsection_2_extension, true).
 
 % Section 7(2), (8): the residence entitlement is subject to its statutory filing window.
 section7_entitled_under_subsection_2(Person) :-
